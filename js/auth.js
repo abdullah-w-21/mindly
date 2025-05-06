@@ -20,11 +20,11 @@ class Auth {
         // Register event listeners
         this.bindEvents();
         
-        // Check if already logged in, but ONLY redirect if we're on login.html
+        // Check if already logged in, but ONLY redirect if we're on index.html
         const currentPath = window.location.pathname;
-        if (this.isLoggedIn() && currentPath.endsWith('login.html')) {
+        if (this.isLoggedIn() && currentPath.endsWith('index.html')) {
             // If we're on login page and already logged in, redirect to app
-            window.location.href = 'index.html';
+            window.location.href = 'app.html';
         }
     }
     
@@ -118,7 +118,7 @@ class Auth {
                 
                 // Redirect to app
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    window.location.href = 'app.html';
                 }, 1000);
             } else {
                 const errorData = await response.json();
@@ -240,7 +240,7 @@ class Auth {
     static logout() {
         localStorage.removeItem(STORAGE_KEYS.token);
         localStorage.removeItem(STORAGE_KEYS.userData);
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
     }
     
     /**
