@@ -8,12 +8,11 @@
   ],
   "routes": [
     {
-      "src": "/",
+      "src": "/(login\\.html)?$",
       "dest": "/login.html"
     },
     {
-      "src": "/index.html",
-      "dest": "/app.html"
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",
