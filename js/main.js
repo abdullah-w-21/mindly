@@ -43,7 +43,7 @@ class MindlyApp {
         // If no token exists, redirect to login
         if (!token) {
             console.log("No authentication token found, redirecting to login");
-            window.location.href = 'login.html';
+            window.location.href = 'index.html';
             return false;
         }
         
@@ -179,7 +179,7 @@ class MindlyApp {
     logout() {
         localStorage.removeItem('mindly_token');
         localStorage.removeItem('mindly_user_data');
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
     }
     
     /**
