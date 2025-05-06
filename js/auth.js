@@ -3,16 +3,6 @@
  * Handles user registration, login, and session management
  */
 
-// API config
-const API_CONFIG = {
-    baseUrl: 'https://api.zyphh.com/api',  // Change for production
-    authEndpoints: {
-        login: '/auth/login',
-        register: '/auth/register',
-        me: '/auth/me'
-    }
-};
-
 // Local storage keys
 const STORAGE_KEYS = {
     token: 'mindly_token',
@@ -30,9 +20,10 @@ class Auth {
         // Register event listeners
         this.bindEvents();
         
-        // Check if already logged in
-        if (this.isLoggedIn()) {
-            // Already logged in, redirect to app
+        // Check if already logged in, but ONLY redirect if we're on login.html
+        const currentPath = window.location.pathname;
+        if (this.isLoggedIn() && currentPath.endsWith('login.html')) {
+            // If we're on login page and already logged in, redirect to app
             window.location.href = 'index.html';
         }
     }
@@ -250,30 +241,6 @@ class Auth {
         localStorage.removeItem(STORAGE_KEYS.token);
         localStorage.removeItem(STORAGE_KEYS.userData);
         window.location.href = 'login.html';
-    }
-    
-    /**
-     * Validate the current token by making a request to the /me endpoint
-     * 
-     * @returns {Promise<boolean>} Whether the token is valid
-     */
-    static async validateToken() {
-        try {
-            const token = this.getToken();
-            if (!token) return false;
-            
-            const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.authEndpoints.me}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            
-            return response.ok;
-        } catch (error) {
-            console.error('Error validating token:', error);
-            return false;
-        }
     }
     
     /**
