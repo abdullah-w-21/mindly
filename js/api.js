@@ -7,7 +7,7 @@
 // API configuration v
 const API_CONFIG = {
     // Base URL - change for production
-    baseUrl: 'https:/api.zyphh.com/api',
+    baseUrl: 'https://api.zyphh.com/api',
     
     // Authentication endpoints
     authEndpoints: {
