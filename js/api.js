@@ -1,13 +1,12 @@
 /**
  * Mindly - API Client
  * Handles all API communication with the backend
- * Includes authentication and error handling
  */
 
-// API configuration v
+// API configuration
 const API_CONFIG = {
-    // Base URL - change for production
-    baseUrl: 'https://api.zyphh.com/api',
+    // Production base URL
+    baseUrl: 'https://api.zyphh.com',
     
     // Authentication endpoints
     authEndpoints: {
@@ -71,14 +70,25 @@ class MindlyAPI {
                 headers
             };
             
+            // Log requests in development
+            console.log(`API Request: ${url}`);
+            
             // Make request
             const response = await fetch(url, requestOptions);
             
             // Check for 401 Unauthorized (token expired/invalid)
             if (response.status === 401) {
-                // Show authentication modal
-                this.handleAuthError();
-                throw new Error('Authentication failed. Please log in again.');
+                // Don't redirect if we're already on the login page
+                const currentPath = window.location.pathname;
+                if (!currentPath.includes('login.html')) {
+                    // Clear auth data
+                    localStorage.removeItem(STORAGE_KEYS.token);
+                    localStorage.removeItem(STORAGE_KEYS.userData);
+                    
+                    // Redirect to login
+                    window.location.href = 'login.html';
+                    throw new Error('Authentication failed');
+                }
             }
             
             // Handle other errors
@@ -97,32 +107,6 @@ class MindlyAPI {
         } catch (error) {
             console.error('API request error:', error);
             throw error;
-        }
-    }
-    
-    /**
-     * Handle authentication errors
-     */
-    static handleAuthError() {
-        // Show authentication modal
-        const modal = document.getElementById('auth-modal');
-        if (modal) {
-            modal.classList.add('active');
-            
-            // Add event listener to login button
-            const loginButton = document.getElementById('auth-modal-login');
-            if (loginButton) {
-                loginButton.addEventListener('click', () => {
-                    localStorage.removeItem(STORAGE_KEYS.token);
-                    localStorage.removeItem(STORAGE_KEYS.userData);
-                    window.location.href = 'login.html';
-                });
-            }
-        } else {
-            // No modal available, redirect to login
-            localStorage.removeItem(STORAGE_KEYS.token);
-            localStorage.removeItem(STORAGE_KEYS.userData);
-            window.location.href = 'login.html';
         }
     }
     
