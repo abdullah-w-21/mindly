@@ -8,9 +8,6 @@
  */
 class MindlyApp {
     constructor() {
-        // Check authentication
-        this.checkAuth();
-        
         // Components
         this.journalUI = null;
         this.charts = null;
@@ -23,6 +20,11 @@ class MindlyApp {
         this.insightsContainer = document.getElementById('insights-container');
         this.insightTemplate = document.getElementById('insight-template');
         
+        // Check authentication first
+        if (!this.checkAuth()) {
+            return; // Stop initialization if not authenticated
+        }
+        
         // Initialize UI
         this.initUI();
         
@@ -32,41 +34,21 @@ class MindlyApp {
     
     /**
      * Check if user is authenticated
+     * 
+     * @returns {boolean} Whether authentication passed
      */
     checkAuth() {
         const token = localStorage.getItem('mindly_token');
+        
+        // If no token exists, redirect to login
         if (!token) {
-            // Redirect to login
+            console.log("No authentication token found, redirecting to login");
             window.location.href = 'login.html';
-            return;
+            return false;
         }
         
-        // Validate token
-        this.validateToken();
-    }
-    
-    /**
-     * Validate authentication token
-     */
-    async validateToken() {
-        try {
-            // Make request to /me endpoint to validate token
-            const result = await fetch(`${API_CONFIG.baseUrl}/auth/me`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('mindly_token')}`
-                }
-            });
-            
-            if (!result.ok) {
-                // Token invalid, redirect to login
-                localStorage.removeItem('mindly_token');
-                localStorage.removeItem('mindly_user_data');
-                window.location.href = 'login.html';
-            }
-        } catch (error) {
-            console.error('Error validating token:', error);
-            // Assume token is valid for now to prevent logout on network errors
-        }
+        console.log("Authentication token found, proceeding to app");
+        return true;
     }
     
     /**
