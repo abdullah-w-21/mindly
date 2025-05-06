@@ -1,0 +1,2 @@
+# mindly
+mental wellness journal
